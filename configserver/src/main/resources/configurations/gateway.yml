@@ -1,0 +1,39 @@
+eureka:
+  instance:
+    hostname: gateway
+    prefer-ip-address: true
+  client:
+    register-with-eureka: false
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: services
+          uri: http://services:8090
+          predicates:
+            - Path=/api/services/**
+        - id: orders
+          uri: http://orders:8091
+          predicates:
+            - Path=/api/orders/**
+        - id: feedbacks
+          uri: http://feedbacks:8092
+          predicates:
+            - Path=/api/feedbacks/**
+
+server:
+  port: 8222
+
+management:
+  tracing:
+    sampler:
+      probability: 1.0
+

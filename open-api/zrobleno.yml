@@ -1,0 +1,1580 @@
+openapi: 3.1.0
+info:
+  title: Zrobleno API
+  description: Zrobleno API
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:{port}/{basePath}'
+    description: Local server
+    variables:
+      port:
+        default: '8222'
+        description: port number
+      basePath:
+        default: api
+        description: API version
+paths:
+
+  /services:
+    post:
+      summary: Create new service
+      description: Create new service
+      operationId: createService
+      tags:
+        - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+
+  /services/{id}:
+    get:
+      summary: Get service by id
+      description: Get service by id
+      operationId: getServiceById
+      tags:
+        - services
+      parameters:
+        - name: id
+          in: path
+          description: ID of service to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/ServiceResponse'
+
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                service-not-found:
+                  summary: Service not found
+                  description: No such service with id':' {id}
+                  $ref: '#/components/examples/NoSuchServiceByIdException'
+
+    delete:
+      summary: Delete Service by id
+      description: Delete Service by id
+      operationId: deleteServiceById
+      tags:
+        - services
+      responses:
+        '204':
+          description: Delete was successful
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                service-not-found:
+                  summary: Service not found
+                  description: No such service with id':' {id}
+                  $ref: '#/components/examples/NoSuchServiceByIdException'
+
+    patch:
+      summary: Update Service by id
+      description: Update Service by id
+      operationId: updateServiceById
+      tags:
+          - services
+      parameters:
+        - $ref: '#/components/schemas/ServiceUpdateRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/ServiceResponse'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                service-not-found:
+                  summary: Service not found
+                  description: No such service with id':' {id}
+                  $ref: '#/components/examples/NoSuchServiceByIdException'
+  /services/v1:
+    get:
+      summary: Get all Services
+      description: Get all Services
+      operationId: getAllServices
+      tags:
+        - services
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: categoryId
+          in: query
+          description: Category id
+          required: false
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfServiceResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of service categories
+                  $ref: '#/components/examples/PageOfServiceResponses'
+
+  /services/v2:
+    get:
+      summary: Get all Services
+      description: Get all Services
+      operationId: getAllServices
+      tags:
+        - services
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: categoryId
+          in: query
+          description: Category id
+          required: false
+          schema:
+            $ref: '#/components/schemas/Id'
+        - name: listOfServiceIds
+          in: query
+          description: List of service ids
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ListOfIds'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfServiceResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of service categories
+                  $ref: '#/components/examples/PageOfServiceResponses'
+
+  /services/categories/{id}:
+    get:
+        summary: Get service category by id
+        description: Get service category by id
+        operationId: getServiceCategoryById
+        tags:
+            - service categories
+        parameters:
+            - name: id
+              in: path
+              description: ID of service category to return
+              required: true
+              schema:
+                  $ref: '#/components/schemas/Id'
+        responses:
+            '200':
+              description: Successful operation
+              content:
+                  application/json:
+                    schema:
+                        $ref: '#/components/schemas/ServiceCategoryResponse'
+                  examples:
+                      basic-cleaning:
+                      summary: Basic cleaning
+                      description: Basic cleaning of apartments
+                      $ref: '#/components/examples/ServiceCategoryResponse'
+
+            '404':
+              description: Service category not found
+              content:
+                  application/json:
+                    schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  examples:
+                      category-not-found:
+                      summary: Service category not found
+                      description: No such service category with id':' {id}
+                      $ref: '#/components/examples/NoSuchServiceCategoryByIdException'
+
+  /services/v1/categories:
+    get:
+      summary: Get all Service Categories
+      description: Get all Service Categories
+      operationId: getAllServiceCategories
+      tags:
+        - service categories
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfServiceCategoryResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of service categories
+                  $ref: '#/components/examples/PageOfServiceCategoryResponses'
+
+  /services/v2/categories:
+    get:
+      summary: Get all Service Categories
+      description: Get all Service Categories
+      operationId: getAllServiceCategories
+      tags:
+        - service categories
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: ids
+          in: query
+          description: List of ids
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ListOfIds'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfServiceCategoryResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of service categories
+                  $ref: '#/components/examples/PageOfServiceCategoryResponses'
+
+  /orders:
+
+    post:
+      summary: Create new Order
+      description: Create new Order
+      operationId: createOrder
+      tags:
+        - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+
+  /orders/{id}:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    get:
+      summary: Get Order by id
+      description: Get Order by id
+      operationId: getOrderById
+      tags:
+        - orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+
+    patch:
+      summary: Update Order by id
+      description: Update Order by id
+      operationId: updateOrderById
+      tags:
+        - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+
+  /orders/{id}/cancel:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    post:
+      summary: Cancel Order by id
+      description: Cancel Order by id
+      operationId: cancelOrderById
+      tags:
+        - orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '400':
+          description: Status of order already Canceled or In-Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-already-canceled:
+                  summary: Order already canceled
+                  description: Illegal order status! From CANCELED to CANCELED in order with id':' {id}
+                  $ref: '#/components/examples/IllegalOrderStatusException'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+
+  /orders/{id}/confirm:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    post:
+      summary: Confirm Order by id
+      description: Confirm Order by id
+      operationId: confirmOrderById
+      tags:
+        - orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '400':
+          description: Status of order already Canceled or In-Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-already-canceled:
+                  summary: Order already canceled
+                  description: Illegal order status! From CANCELED to CONFIRMED in order with id':' {id}
+                  $ref: '#/components/examples/IllegalOrderStatusException'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                category-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+
+  /orders/{id}/in-progress:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    post:
+      summary: Set Order in progress by id
+      description: Set Order in progress by id
+      operationId: in-progressOrderById
+      tags:
+        - orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '400':
+          description: Status of order already Canceled or In-Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-already-canceled:
+                  summary: Order already canceled
+                  description: Illegal order status! From CANCELED to IN-PROGRESS in order with id':' {id}
+                  $ref: '#/components/examples/IllegalOrderStatusException'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                category-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+
+  /orders/{id}/complete:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    post:
+      summary: Complete Order by id
+      description: Complete Order by id
+      operationId: completeOrderById
+      tags:
+        - orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/OrderResponse'
+        '400':
+          description: Status of order already Canceled or In-Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                order-already-canceled:
+                  summary: Order already canceled
+                  description: Illegal order status! From CANCELED to COMPLETED in order with id':' {id}
+                  $ref: '#/components/examples/IllegalOrderStatusException'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                category-not-found:
+                  summary: Order not found
+                  description: No such order with id':' {id}
+                  $ref: '#/components/examples/NoSuchOrderByIdException'
+  /orders/v1:
+    get:
+      summary: Get all Orders
+      description: Get all Orders
+      operationId: getAllOrders
+      tags:
+        - orders
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfOrderResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of orders
+                  $ref: '#/components/examples/PageOfOrderResponses'
+
+  /orders/v2:
+    get:
+      summary: Get all Orders
+      description: Get all Orders
+      operationId: getAllOrders
+      tags:
+        - orders
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: ownerId
+          in: query
+          description: Owner id
+          required: false
+          schema:
+            $ref: '#/components/schemas/OwnerId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfOrderResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of orders
+                  $ref: '#/components/examples/PageOfOrderResponses'
+
+  /feedbacks:
+    post:
+      summary: Create new feedback
+      description: Create new feedback
+      operationId: createFeedback
+      tags:
+        - feedbacks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/FeedbackResponse'
+
+  /feedbacks/{id}:
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+
+    get:
+      summary: Get Feedback by id
+      description: Get Feedback by id
+      operationId: getFeedbackById
+      tags:
+        - feedbacks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
+              examples:
+                basic-cleaning:
+                  summary: Basic cleaning
+                  description: Basic cleaning of apartments
+                  $ref: '#/components/examples/FeedbackResponse'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                feedback-not-found:
+                  summary: Feedback not found
+                  description: No such feedback with id':' {id}
+                  $ref: '#/components/examples/NoSuchFeedbackByIdException'
+
+    delete:
+      summary: Delete Feedback by id
+      description: Delete Feedback by id
+      operationId: deleteFeedbackById
+      tags:
+        - feedbacks
+      responses:
+        '204':
+          description: Delete was successful
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                feedback-not-found:
+                  summary: Feedback not found
+                  description: No such feedback with id':' {id}
+                  $ref: '#/components/examples/NoSuchFeedbackByIdException'
+
+    patch:
+      summary: Update Feedback by id
+      description: Update Feedback by id
+      operationId: updateFeedbackById
+      tags:
+        - feedbacks
+      parameters:
+        - $ref: '#/components/schemas/FeedbackUpdateRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/FeedbackResponse'
+              examples:
+                basic-cleaning:
+                    summary: Basic cleaning
+                    description: Basic cleaning of apartments
+                    $ref: '#/components/examples/FeedbackResponse'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                feedback-not-found:
+                  summary: Feedback not found
+                  description: No such feedback with id':' {id}
+                  $ref: '#/components/examples/NoSuchFeedbackByIdException'
+
+  /feedbacks/v1:
+    get:
+      summary: Get all Feedbacks
+      description: Get all Feedbacks
+      operationId: getAllFeedbacks
+      tags:
+        - feedbacks
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: ownerId
+          in: query
+          description: Owner id
+          required: false
+          schema:
+            $ref: '#/components/schemas/OwnerId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfFeedbackResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of feedbacks
+                  $ref: '#/components/examples/PageOfFeedbackResponses'
+
+  /feedbacks/v2:
+    get:
+      summary: Get all Feedbacks
+      description: Get all Feedbacks
+      operationId: getAllFeedbacks
+      tags:
+        - feedbacks
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageNumber'
+        - name: size
+          in: query
+          description: Page size
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSize'
+        - name: sort
+          in: query
+          description: Page sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/QueryPageSort'
+        - name: ownerId
+          in: query
+          description: Owner id
+          required: false
+          schema:
+            $ref: '#/components/schemas/OwnerId'
+        - name: orderId
+          in: query
+          description: Order id
+          required: false
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfFeedbackResponses'
+              examples:
+                first-page:
+                  summary: First page
+                  description: First page of feedbacks
+                  $ref: '#/components/examples/PageOfFeedbackResponses'
+
+components:
+  schemas:
+
+    Id:
+      type: integer
+      format: int64
+      examples:
+        - 1
+        - 2
+        - 3
+
+    Rating:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 5
+      examples:
+        - 5
+        - 4
+
+    Comment:
+      type: string
+      minLength: 1
+      maxLength: 255
+      examples:
+        - Very good service
+        - Bad service
+
+    OrderStatus:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        OrderStatusName:
+          $ref: '#/components/schemas/OrderStatusName'
+
+    OrderStatusName:
+      type: string
+      enum:
+        - CREATED
+        - CANCELED
+        - APPROVED
+        - IN_PROGRESS
+        - COMPLETED
+      examples:
+        - CREATED
+        - CANCELED
+        - APPROVED
+        - IN_PROGRESS
+        - COMPLETED
+
+    ImageUrl:
+      type: string
+      format: uri
+      examples:
+        - https://www.ikea.com/en/images/products/ekedalen-stul-belyy__0719270_pe731721_s5.jpg
+        - https://www.ikea.com/en/images/products/ekedalen-stul-beldy__0719270_pe731721_s5.jpg
+
+    OwnerId:
+      type: uuid
+      format: uuid
+      examples:
+          - 550e8400-e29b-41d4-a716-446655440000
+          - 550e8400-e29b-41d4-a716-446655440001
+
+    BigDecimal:
+      type: number
+      format: double
+      examples:
+        - 100.0
+        - 200.0
+
+    CreatedAt:
+      type: string
+      format: date-time
+      examples:
+        - 2021-10-10T10:10:10.000Z
+        - 2021-10-10T10:10:10.000Z
+
+    LastModifiedAt:
+      type: string
+      format: date-time
+      examples:
+        - 2021-10-10T10:10:10.000Z
+        - 2021-10-10T10:10:10.000Z
+
+    QueryPageNumber:
+      type: integer
+      format: int32
+      minimum: 0
+      default: 0
+      examples:
+        - 0
+        - 1
+
+    QueryPageSize:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 100
+      default: 20
+      examples:
+        - 10
+        - 20
+
+    QueryPageSort:
+      type: string
+      pattern: ^[a-z0-9]+(,[a-z0-9]+)*$
+      examples:
+        - id,DESC
+        - id,ASC
+
+    ListOfIds:
+      type: array
+      items:
+          $ref: '#/components/schemas/Id'
+      examples:
+          - [1, 2, 3]
+          - [4, 5, 6]
+
+    Page:
+      type: object
+      properties:
+        _embedded:
+          type: array
+        _links:
+          type: object
+          patternProperties:
+            "^[a-z0-9]+$":
+              type: object
+              properties:
+                href:
+                  type: string
+                  examples:
+                    - /services
+                    - /feedbacks
+                    - /orders
+          minProperties: 1
+        page:
+          type: object
+          properties:
+            size:
+              type: integer
+              format: int32
+              examples:
+                - 10
+                - 20
+            totalElements:
+              type: integer
+              format: int64
+              examples:
+                - 100
+                - 200
+            totalPages:
+              type: integer
+              format: int32
+              examples:
+                - 10
+                - 20
+            number:
+              type: integer
+              format: int32
+              examples:
+                - 1
+                - 2
+          required:
+            - size
+            - totalElements
+            - totalPages
+            - number
+      required:
+        - _embedded
+        - page
+
+    PageOfServiceCategoryResponses:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                  $ref: '#/components/schemas/ServiceCategoryResponse'
+
+    ServiceCategoryResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+          examples:
+            - Cleaning
+        description:
+          type: string
+          examples:
+            - Cleaning of apartments
+            - Repair of apartments
+        imageUrls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageUrl'
+        createdAt:
+            $ref: '#/components/schemas/CreatedAt'
+        lastModifiedAt:
+            $ref: '#/components/schemas/LastModifiedAt'
+      required:
+        - id
+        - title
+        - description
+        - imageUrls
+        - createdAt
+        - lastModifiedAt
+
+    PageOfServiceResponses:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                  $ref: '#/components/schemas/ServiceResponse'
+
+    ServiceResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        categoryId:
+          $ref: '#/components/schemas/Id'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        title:
+          type: string
+          examples:
+            - Cleaning of apartments
+            - Repair of phone
+        description:
+          type: string
+          examples:
+            - Cleaning of apartments
+            - Repair of phone
+        imageUrls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageUrl'
+        price:
+          $ref: '#/components/schemas/BigDecimal'
+        priority:
+          type: integer
+          format: int32
+          examples:
+            - 1
+            - 2
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        lastModifiedAt:
+          $ref: '#/components/schemas/LastModifiedAt'
+
+      required:
+        - id
+        - categoryId
+        - ownerId
+        - title
+        - description
+        - imageUrls
+        - price
+        - priority
+        - createdAt
+        - lastModifiedAt
+
+    PageOfOrderResponses:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                  $ref: '#/components/schemas/OrderResponse'
+
+    OrderResponse:
+    type: object
+    properties:
+      id:
+        $ref: '#/components/schemas/Id'
+      ownerId:
+        $ref: '#/components/schemas/OwnerId'
+      status:
+        $ref: '#/components/schemas/OrderStatus'
+      serviceId:
+        $ref: '#/components/schemas/Id'
+      comment:
+        $ref: '#/components/schemas/Comment'
+      feedback:
+        $ref: '#/components/schemas/FeedbackResponse'
+      createdAt:
+        $ref: '#/components/schemas/CreatedAt'
+      lastModifiedAt:
+        $ref: '#/components/schemas/LastModifiedAt'
+
+    PageOfFeedbackResponses:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/FeedbackResponse'
+
+    FeedbackResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        orderId:
+          $ref: '#/components/schemas/Id'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        comment:
+          $ref: '#/components/schemas/Comment'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        lastModifiedAt:
+          $ref: '#/components/schemas/LastModifiedAt'
+      required:
+        - id
+        - orderId
+        - ownerId
+        - rating
+        - createdAt
+        - lastModifiedAt
+
+    ServiceCreateRequest:
+      type: object
+      properties:
+        categoryId:
+          $ref: '#/components/schemas/Id'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        title:
+          type: string
+          examples:
+              - Cleaning of apartments
+              - Repair of phone
+        description:
+          type: string
+          examples:
+              - Cleaning of apartments
+              - Repair of phone
+        priority:
+          type: integer
+          format: int32
+          examples:
+            - 1
+            - 2
+        imageUrls:
+          type: array
+          items:
+              $ref: '#/components/schemas/ImageUrl'
+        price:
+          $ref: '#/components/schemas/BigDecimal'
+      required:
+          - categoryId
+          - ownerId
+          - title
+          - description
+          - imageUrls
+          - price
+          - priority
+
+    OrderCreateRequest:
+      type: object
+      properties:
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        serviceId:
+          $ref: '#/components/schemas/Id'
+        comment:
+          $ref: '#/components/schemas/Comment'
+      required:
+          - ownerId
+          - serviceId
+
+    FeedbackCreateRequest:
+      type: object
+      properties:
+        orderId:
+          $ref: '#/components/schemas/Id'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        comment:
+          $ref: '#/components/schemas/Comment'
+      required:
+          - orderId
+          - ownerId
+          - rating
+
+    ServiceUpdateRequest:
+      type: object
+      properties:
+        categoryId:
+            $ref: '#/components/schemas/Id'
+        title:
+          type: string
+          examples:
+              - Cleaning of apartments
+              - Repair of phone
+        description:
+          type: string
+          examples:
+              - Cleaning of apartments
+              - Repair of phone
+        priority:
+          type: integer
+          format: int32
+          examples:
+              - 1
+              - 2
+        imageUrls:
+          type: array
+          items:
+              $ref: '#/components/schemas/ImageUrl'
+        price:
+          $ref: '#/components/schemas/BigDecimal'
+
+    OrderUpdateRequest:
+      type: object
+      properties:
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatusName'
+        comment:
+          $ref: '#/components/schemas/Comment'
+
+    FeedbackUpdateRequest:
+      type: object
+      properties:
+        rating:
+          $ref: '#/components/schemas/Rating'
+        comment:
+          $ref: '#/components/schemas/Comment'
+
+    #    According to RFC 7807
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          examples:
+            - https://example.com/probs/out-of-credit
+            - https://example.com/probs/insufficient-space
+        title:
+          type: string
+          examples:
+            - Out of credit
+            - Insufficient space for resource
+        status:
+          type: integer
+          format: int32
+          examples:
+            - 403
+            - 507
+        detail:
+          type: string
+          examples:
+            - You do not have enough credit.
+            - Only 20MB available.
+        instance:
+          type: string
+          examples:
+            - /account/12345/msgs/abc
+            - /account/12345/msgs/abc/attachments/1
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+
+  examples:
+
+    ServiceCategoryResponse:
+      value:
+        id: 1
+        title: Cleaning
+        description: Cleaning of apartments
+        imageUrls:
+          - https://www.ikea.com/en/images/products/ekedalen-stul-belyy__0719270_pe731721_s5.jpg
+        createdAt: 2021-10-10T10:10:10.000Z
+        lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    ServiceResponse:
+      value:
+       id: 1
+       categoryId: 1
+       ownerId: "550e8400-e29b-41d4-a716-446655440000"
+       title: Basic cleaning
+       description: Basic cleaning of apartments
+       imageUrls:
+          - https://www.ikea.com/en/images/products/ekedalen-stul-belyy__0719270_pe731721_s5.jpg
+       price: 200.0
+       priority: 1
+       createdAt: 2021-10-10T10:10:10.000Z
+      lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    OrderResponse:
+      value:
+        id: 1
+        ownerId: "550e8400-e29b-41d4-a716-446655440000"
+        status:
+          id: 1
+          OrderStatusName: CREATED
+        serviceId: 1
+        comment: "Fine"
+        feedback:
+          id: 1
+          orderId: 1
+          ownerId: "550e8400-e29b-41d4-a716-446655440000"
+          rating: 5
+          comment: "Very good service"
+          createdAt: 2021-10-10T10:10:10.000Z
+          lastModifiedAt: 2021-10-10T10:10:10.000Z
+        createdAt: 2021-10-10T10:10:10.000Z
+        lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    FeedbackResponse:
+      value:
+        id: 1
+        orderId: 1
+        ownerId: "550e8400-e29b-41d4-a716-446655440000"
+        rating: 5
+        comment: "Very good service"
+        createdAt: 2021-10-10T10:10:10.000Z
+        lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    PageOfServiceCategoryResponses:
+      value:
+        content:
+          - id: 1
+            title: Cleaning
+            description: Cleaning of apartments
+            imageUrls:
+              - https://www.ikea.com/en/images/products/ekedalen-stul-belyy__0719270_pe731721_s5.jpg
+            createdAt: 2021-10-10T10:10:10.000Z
+            lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    PageOfServiceResponses:
+      value:
+        content:
+          - id: 1
+            categoryId: 1
+            ownerId: "550e8400-e29b-41d4-a716-446655440000"
+            title: Basic cleaning
+            description: Basic cleaning of apartments
+            imageUrls:
+              - https://www.ikea.com/en/images/products/ekedalen-stul-belyy__0719270_pe731721_s5.jpg
+            price: 200.0
+            priority: 1
+            createdAt: 2021-10-10T10:10:10.000Z
+            lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    PageOfOrderResponses:
+      value:
+        content:
+          - id: 1
+            ownerId: "550e8400-e29b-41d4-a716-446655440000"
+            status:
+              id: 1
+              OrderStatusName: CREATED
+            serviceId: 1
+            comment: "Need new key"
+            feedback:
+              id: 1
+              orderId: 1
+              ownerId: "550e8400-e29b-41d4-a716-446655440000"
+              rating: 5
+              comment: "Very good service"
+              createdAt: 2021-10-10T10:10:10.000Z
+              lastModifiedAt: 2021-10-10T10:10:10.000Z
+            createdAt: 2021-10-10T10:10:10.000Z
+            lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    PageOfFeedbackResponses:
+      value:
+        content:
+          - id: 1
+            orderId: 1
+            ownerId: "550e8400-e29b-41d4-a716-446655440000"
+            rating: 5
+            comment: "Very good service"
+            createdAt: 2021-10-10T10:10:10.000Z
+            lastModifiedAt: 2021-10-10T10:10:10.000Z
+
+    NoSuchServiceByIdException:
+      value:
+        type: about:blank
+        title: Service not found
+        status: 404
+        detail: "No service with id 1 found"
+        instance: /services/1
+
+    NoSuchServiceCategoryByIdException:
+      value:
+        type: about:blank
+        title: Service category not found
+        status: 404
+        detail: "No service category with id 1 found"
+        instance: /services/categories/1
+
+    NoSuchOrderByIdException:
+      value:
+        type: about:blank
+        title: Order category not found
+        status: 404
+        detail: "No order with id 1 found"
+        instance: /orders/1
+
+    NoSuchFeedbackByIdException:
+      value:
+        type: about:blank
+        title: Feedback not found
+        status: 404
+        detail: "No feedback with id 1 found"
+        instance: /feedbacks/1
+
+    IllegalOrderStatusException:
+      value:
+        type: about:blank
+        title: Illegal order status
+        status: 400
+        detail: "Illegal order status! From {status} to {status} in order with id 1"
+        instance: /orders/{id}

@@ -1,0 +1,6 @@
+rootProject.name = 'feedback'
+
+includeBuild('../libs/validation')
+includeBuild('../libs/payload')
+includeBuild('../libs/types')
+includeBuild('../libs/testspecific')

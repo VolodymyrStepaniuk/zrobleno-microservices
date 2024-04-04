@@ -1,0 +1,47 @@
+application:
+  config:
+    order:
+      url: http://gateway:8222/api/orders
+
+eureka:
+  instance:
+    hostname: feedbacks
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+server:
+  port: 8092
+  servlet:
+    contextPath: /api
+spring:
+  application:
+    name: feedbacks
+  datasource:
+    url: jdbc:postgresql://postgres:5432/zrobleno
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: false
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        show_sql: false
+        check_nullability: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+          #security:
+          #oauth2:
+          #resourceserver:
+          #jwt:
+          #issuer-uri: http://localhost:9090/realms/zrobleno
+        #jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+management:
+  tracing:
+    sampler:
+      probability: 1.0

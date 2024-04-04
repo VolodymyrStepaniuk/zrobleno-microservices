@@ -1,0 +1,6 @@
+rootProject.name = 'order'
+
+includeBuild('../libs/validation')
+includeBuild('../libs/payload')
+includeBuild('../libs/types')
+includeBuild('../libs/testspecific')
